@@ -13,11 +13,10 @@ class PostDaoMysql implements PostDAO {
     }
 
     public function insert(Post $p) {
-        $sql = $this->pdo->prepare("INSERT INTO posts (
-           id_user, type, created_at, body 
-        ) VALUES (
-            :id_user, :type, :created_at, :body
-        )");
+        $sql = $this->pdo->prepare("INSERT INTO posts
+        (id_user, type, created_at, body)         
+        VALUES (:id_user, :type, :created_at, :body)");
+            
         $sql->bindValue(':id_user', $p->id_user);
         $sql->bindValue(':type', $p->type);
         $sql->bindValue(':created_at', $p->created_at);
@@ -25,10 +24,18 @@ class PostDaoMysql implements PostDAO {
         $sql->execute();
     }
 
+    public function delete($id, $id_user) {
+        $sql = $this->pdo->prepare("DELETE FROM posts
+        WHERE id = :id AND id_user = :id_user");        
+        $sql->bindValue(':id', $id);
+        $sql->bindValue(':id_user', $id_user);
+        $sql->execute();
+    }
+
     public function getUserFeed($id_user) {
         $array = [];
 
-        // 1. Pegar os posts ordenado pela data.
+        // 2. Pegar os posts ordenado pela data.
         $sql = $this->pdo->prepare("SELECT * FROM posts
         WHERE id_user = :id_user
         ORDER BY created_at DESC");
@@ -38,7 +45,7 @@ class PostDaoMysql implements PostDAO {
         if($sql->rowCount() > 0) {
             $data = $sql->fetchAll(PDO::FETCH_ASSOC);
 
-            // 2. Transformar o resultado em objetos.
+            // 3. Transformar o resultado em objetos.
             $array = $this->_postListToObject($data, $id_user);
         }
     
@@ -71,7 +78,9 @@ class PostDaoMysql implements PostDAO {
     public function getPhotosFrom($id_user) {
         $array = [];
 
-        $sql = $this->pdo->prepare("SELECT * FROM posts WHERE id_user = :id_user AND type = 'photo' ORDER BY created_at DESC");
+        $sql = $this->pdo->prepare("SELECT * FROM posts WHERE
+        id_user = :id_user AND type = 'photo'
+        ORDER BY created_at DESC");
         $sql->bindValue(":id_user", $id_user);
         $sql->execute();
 
@@ -92,13 +101,14 @@ class PostDaoMysql implements PostDAO {
         foreach($post_list as $post_item) {
             $newPost = new Post();
             $newPost->id = $post_item['id'];
+            //$newPost->id_user = $post_item['id_user'];
             $newPost->type = $post_item['type'];
             $newPost->created_at = $post_item['created_at'];
             $newPost->body = $post_item['body'];
             $newPost->mine = false;
 
             if($post_item['id_user'] == $id_user) {
-                $newPost->mine == true;
+                $newPost->mine = true;                
             }
 
             // Pegar informações do usuário.
@@ -112,6 +122,7 @@ class PostDaoMysql implements PostDAO {
             $newPost->comments = $postCommentDao->getComments($newPost->id);
 
             $posts[] = $newPost;
+            
         }
 
         return $posts;

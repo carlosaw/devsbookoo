@@ -4,22 +4,21 @@ require_once 'models/Auth.php';
 require_once 'dao/PostDaoMysql.php';
 
 $auth = new Auth($pdo, $base);
-$userInfo = $auth->checkToken();// Usuário que esta logado
+$userInfo = $auth->checkToken();// Usuário que esta logado//print_r($userInfo);exit;
 $activeMenu = 'home';
 
 $postDao = new PostDaoMysql($pdo);
-$feed= $postDao->getHomeFeed($userInfo->id);
-/*
-echo '<pre>';
+$feed = $postDao->getHomeFeed($userInfo->id);
+/*echo '<pre>';
 print_r($feed);
-exit;
-*/
+exit;*/
 
 require 'partials/header.php';
 require 'partials/menu.php';
 ?>
 
 <section class="feed mt-10">
+
     <div class="row">
         <div class="column pr-5">
         

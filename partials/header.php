@@ -36,5 +36,5 @@ $firstName = current(explode(' ', $userInfo->name));
                 </div>
             </div>
         </div>
-    </header>
+    </header>    
     <section class="container main">

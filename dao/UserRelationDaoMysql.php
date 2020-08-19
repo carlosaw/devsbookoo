@@ -47,8 +47,7 @@ class UserRelationDaoMysql implements UserRelationDAO {
     }
 
     public function getFollowers($id) {
-        $users = [];
-
+        $users = [];        
         $sql = $this->pdo->prepare("SELECT user_from FROM userrelations
         WHERE user_to = :user_to");
         

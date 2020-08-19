@@ -94,7 +94,7 @@ require 'partials/menu.php';
                     <?php endforeach; ?>
                     
                     <?php if(count($user->photos) === 0): ?>
-                        Este usuário não possui fotos!
+                        Não há fotos deste usuário!
                     <?php endif; ?>
 
                 </div>

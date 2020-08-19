@@ -28,7 +28,6 @@ class Auth {
     }
 
     public function validateLogin($email, $password) {
-
         $user = $this->dao->findByEmail($email);
         if($user) {
 

@@ -1,8 +1,6 @@
 <?php
 require_once 'config.php';
 require_once 'models/Auth.php';
-require_once 'dao/PostDaoMysql.php';
-require_once 'dao/UserRelationDaoMysql.php';
 
 $auth = new Auth($pdo, $base);
 $userInfo = $auth->checkToken();// Usuário que esta logado
@@ -29,6 +27,7 @@ if(!$user) {
     header("Location: ".$base);
     exit;
 }
+// Pega a idade em anos (56 anos)
 $dateFrom = new DateTime($user->birthdate);
 $dateTo = new DateTime('today');
 $user->ageYears = $dateFrom->diff($dateTo)->y;
@@ -39,7 +38,6 @@ $feed = $postDao->getUserFeed($id);
 
 // Verificar se eu SIGO este Usuário.
 $isFollowing = $userRelationDao->isFollowing($userInfo->id, $id);
-
 
 require 'partials/header.php';
 require 'partials/menu.php';
@@ -58,7 +56,7 @@ require 'partials/menu.php';
                     <div class="profile-info-name">
                         <div class="profile-info-name-text"><?=$user->name;?></div>
                         <?php if(!empty($user->city)): ?>
-                        <div class="profile-info-location"><?=$user->city;?></div>
+                            <div class="profile-info-location"><?=$user->city;?></div>
                         <?php endif; ?>
                     </div>
                     <div class="profile-info-data row">
@@ -93,7 +91,7 @@ require 'partials/menu.php';
                 <div class="box-body">
                     
                     <div class="user-info-mini">
-                        <img src="assets/images/calendar.png" />
+                        <img src="<?=$base;?>/assets/images/calendar.png" />
                         <?=date('d/m/Y', strtotime($user->birthdate));?> (<?=$user->ageYears;?> anos)
                     </div>
 
@@ -174,17 +172,17 @@ require 'partials/menu.php';
                     <?php endif; ?>
                 </div>
 
-
             </div>
 
             <?php if($id == $userInfo->id): ?>
                 <?php require 'partials/feed-editor.php'; ?>
             <?php endif; ?>
-
+                
             <?php if(count($feed) > 0): ?>
                 <?php foreach($feed as $item): ?>
                     <?php require 'partials/feed-item.php'; ?>
                 <?php endforeach; ?>
+                
                 <?php else: ?>
                     Não há postagens deste usuário.
             <?php endif; ?>
