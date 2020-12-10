@@ -10,7 +10,6 @@ $id = filter_input(INPUT_GET, 'id');
 
 if($id) {
     $postDao = new PostDaoMysql($pdo);
-
     $postDao->delete($id, $userInfo->id);
 }
 
